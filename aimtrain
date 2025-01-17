@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>War Thunder Aim Trainer</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #000428, #004e92);
+    }
+
+    #game-area {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      cursor: crosshair;
+    }
+
+    .target {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      border-radius: 50%;
+      transition: transform 0.1s;
+    }
+
+    .hit {
+      background-color: green;
+    }
+
+    .settings {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .settings label {
+      font-size: 14px;
+      margin-right: 10px;
+    }
+
+    .score {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="settings">
+    <label for="speed">Target Speed:</label>
+    <input type="range" id="speed" min="1" max="10" value="5">
+  </div>
+  <div class="score">Score: <span id="score">0</span></div>
+  <div id="game-area"></div>
+
+  <script>
+    const gameArea = document.getElementById('game-area');
+    const speedInput = document.getElementById('speed');
+    const scoreDisplay = document.getElementById('score');
+
+    let score = 0;
+    let targetSpeed = 5;
+
+    // Update speed when slider is adjusted
+    speedInput.addEventListener('input', () => {
+      targetSpeed = parseInt(speedInput.value);
+    });
+
+    // Function to create a target
+    function createTarget() {
+      const target = document.createElement('div');
+      target.classList.add('target');
+      gameArea.appendChild(target);
+      moveTarget(target);
+
+      target.addEventListener('click', () => {
+        target.classList.add('hit');
+        score++;
+        scoreDisplay.textContent = score;
+        setTimeout(() => {
+          target.remove();
+          createTarget();
+        }, 200);
+      });
+    }
+
+    // Function to move the target
+    function moveTarget(target) {
+      const x = Math.random() * (window.innerWidth - 50);
+      const y = Math.random() * (window.innerHeight - 50);
+      target.style.transform = `translate(${x}px, ${y}px)`;
+
+      setTimeout(() => moveTarget(target), 1000 / targetSpeed);
+    }
+
+    // Start the game by creating the first target
+    createTarget();
+  </script>
+</body>
+</html>
